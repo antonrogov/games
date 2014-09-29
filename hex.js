@@ -2,24 +2,23 @@ document.ontouchmove = function (e) {
   e.preventDefault()
 };
 
-var Hex = function (i, j) {
-  this.i = i;
-  this.j = j;
-}
-
 window.onload = function () {
   var canvas = document.getElementById('game'),
-	    ctx = canvas.getContext('2d');
+	    ctx = canvas.getContext('2d'),
+      currentI = -1, currentJ = -1,
+      sqrt3 = 0.8660254037,
+      t = 30,
+      r = t * sqrt3,
+      gridX = 20 + r * 2,
+      gridY = 20 + t;
 
   function drawHex(i, j, selected) {
-    ctx.strokeStyle = selected ? 'black' : 'grey';
+    ctx.strokeStyle = selected ? 'red' : 'grey';
     ctx.lineWidth = 1;
     ctx.beginPath();
 
-    var t = 30,
-        r = t * 0.8660254037,
-        x = 20 + r * 2 + (i - (j % 2) / 2.0) * r * 2,
-        y = 20 + t + j * t * 1.5;
+    var x = gridX + (i - (j & 1) * 0.5) * r * 2,
+        y = gridY + j * t * 1.5;
 
     ctx.moveTo(x, y - t);
     ctx.lineTo(x + r, y - t / 2);
@@ -37,10 +36,52 @@ window.onload = function () {
 		ctx.fillText('(' + i + ',' + j + ')', x, y);
   }
 
-	ctx.clearRect(0, 0, 400, 300);
-  for (var i = 0; i < 5; i++) {
-    for (var j = 0; j < 4; j++) {
-      drawHex(i, j, i == 0 && j == 0);
+  function render() {
+    ctx.clearRect(0, 0, 400, 300);
+    for (var i = 0; i < 5; i++) {
+      for (var j = 0; j < 4; j++) {
+        drawHex(i, j, i == currentI && j == currentJ);
+      }
     }
   }
+
+  render();
+
+  canvas.addEventListener('mousemove', function(e) {
+    var rect = canvas.getBoundingClientRect(),
+        x = e.clientX - rect.left - gridX,
+        y = e.clientY - rect.top - gridY;
+
+    currentJ = (y + r) / (t * 1.5);
+    currentI = (x + r) / (r * 2) + (currentJ & 1) * 0.5;
+
+    currentI = Math.floor(currentI);
+    currentJ = Math.floor(currentJ);
+    // currentI = (x * sqrt3 - y) / (t * 3);
+    // currentJ = (y * 2) / (t * 3);
+
+    // var cx = currentI,
+    //     cz = currentJ,
+    //     cy = - cx - cz,
+    //     rx = Math.round(cx),
+    //     ry = Math.round(cy),
+    //     rz = Math.round(cz),
+    //     dx = Math.abs(cx - rx),
+    //     dy = Math.abs(cy - ry),
+    //     dz = Math.abs(cz - rz);
+
+    // if (dx > dy && dx > dz) {
+    //   rx = - ry - rz;
+    // } else if (dy > dz) {
+    //   ry = - rx - rz;
+    // } else {
+    //   rz = - rx - ry;
+    // }
+
+    // currentI = rx;
+    // currentJ = rz + (rx + (rx & 1)) / 2;
+
+    render();
+  }, false);
 };
+
