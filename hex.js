@@ -47,10 +47,9 @@ window.onload = function () {
 
   render();
 
-  canvas.addEventListener('mousemove', function(e) {
-    var rect = canvas.getBoundingClientRect(),
-        x = e.clientX - rect.left - gridX,
-        y = e.clientY - rect.top - gridY;
+  function select(x, y) {
+    x -= gridX;
+    y -= gridY;
 
     currentJ = (y + r) / (t * 1.5);
     currentI = (x + r) / (r * 2) + (currentJ & 1) * 0.5;
@@ -82,6 +81,19 @@ window.onload = function () {
     // currentJ = rz + (rx + (rx & 1)) / 2;
 
     render();
+  }
+
+  canvas.addEventListener('mousemove', function (e) {
+    select(e.pageX - canvas.offsetLeft,
+           e.pageY - canvas.offsetTop);
   }, false);
+
+  canvas.addEventListener('touchmove', function (e) {
+    if (!e) return;
+
+    e.preventDefault();
+    select(e.targetTouches[0].pageX - canvas.offsetLeft,
+           e.targetTouches[0].pageY - canvas.offsetTop);
+  }, true);
 };
 
