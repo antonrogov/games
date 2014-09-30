@@ -7,10 +7,10 @@ window.onload = function () {
 	    ctx = canvas.getContext('2d'),
       currentI = -1, currentJ = -1,
       sqrt3 = 0.8660254037,
-      t = 30,
+      t = 23,
       r = t * sqrt3,
-      gridX = 20 + r * 2,
-      gridY = 20 + t;
+      gridX = 10 + r * 2,
+      gridY = 10 + t;
 
   function drawHex(i, j, selected) {
     ctx.strokeStyle = selected ? 'red' : 'grey';
@@ -30,16 +30,16 @@ window.onload = function () {
     ctx.stroke();
 
 		ctx.fillStyle = "black"
-		ctx.font = "bolder 8pt Trebuchet MS,Tahoma,Verdana,Arial,sans-serif";
+		ctx.font = "bolder 7pt Trebuchet MS,Tahoma,Verdana,Arial,sans-serif";
 		ctx.textAlign = "center";
 		ctx.textBaseline = 'middle';
 		ctx.fillText('(' + i + ',' + j + ')', x, y);
   }
 
   function render() {
-    ctx.clearRect(0, 0, 400, 300);
-    for (var i = 0; i < 5; i++) {
-      for (var j = 0; j < 4; j++) {
+    ctx.clearRect(0, 0, 640, 480);
+    for (var i = 0; i < 15; i++) {
+      for (var j = 0; j < 11; j++) {
         drawHex(i, j, i == currentI && j == currentJ);
       }
     }
